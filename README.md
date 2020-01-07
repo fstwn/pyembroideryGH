@@ -31,7 +31,8 @@ The purpose of this project is to enable Rhino and Grasshopper to directly read,
     ```
     C:\Users\%USERNAME%\AppData\Roaming\Grasshopper\UserObjects
     ```
-  - Or open Rhino & Grasshopper and in the Grasshopper Window navigate to
+  - Or open Rhino & Grasshopper and in the Grasshopper Window click on
+  
     **File -> Special Folders -> User Object Folder**
 - Move the whole `pyembroideryGH` directory to the UserObjects folder.
 
