@@ -12,11 +12,12 @@ The purpose of this project is to enable Rhino and Grasshopper to directly read,
 
 ## Installation & Usage
 
-#### 1. Download release files
+### 1. Download release files
 
-- On this repository site go to "releases" and download the newest release
+- On this repository site go to [releases](https://github.com/fstwn/pyembroideryGH/releases) and download the newest release
+- Unzip the downloaded archive. You should get two folders `pyembroidery`, `pyembroideryGH` and a text-file.
 
-#### 2. Install ironpyembroidery
+### 2. Install ironpyembroidery
 
 - Open the scripts folder of Rhino 6 by opening explorer and navigating to
   ```
@@ -24,7 +25,7 @@ The purpose of this project is to enable Rhino and Grasshopper to directly read,
   ```
 - Move the whole `pyembroidery` directory to the scripts folder.
 
-#### 3. Install pyembroideryGH UserObjects
+### 3. Install pyembroideryGH UserObjects
 
 - Navigate to the Grasshopper UserObjects folder. This can be done in two ways:
   - Either open explorer and go to
@@ -32,11 +33,11 @@ The purpose of this project is to enable Rhino and Grasshopper to directly read,
     C:\Users\%USERNAME%\AppData\Roaming\Grasshopper\UserObjects
     ```
   - Or open Rhino & Grasshopper and in the Grasshopper Window click on
-  
+
     **File -> Special Folders -> User Object Folder**
 - Move the whole `pyembroideryGH` directory to the UserObjects folder.
 
-#### 4. Unblock the new UserObjects!
+### 4. Unblock the new UserObjects!
 
 - Go into your `pyembroideryGH` folder inside Grasshoppers UserObjects folder
 - Right click onto the first UserObject and go to **Properties**
