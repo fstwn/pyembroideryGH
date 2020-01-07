@@ -10,25 +10,28 @@ The purpose of this project is to enable Rhino and Grasshopper to directly read,
 
 **The ironpyembroidery library is included here as a submodule, so you don't have to get it separately when installing! For more info read below.**
 
-## Installing pyembroideryGH
+## Installation & Usage
 
-### 1. Install ironpyembroidery
+#### 1. Download release files
+
+- On this repository site go to "releases" and download the newest release
+
+#### 2. Install ironpyembroidery
 
 - Navigate to the scripts folder of Rhino 6:
-  Open Explorer and go to "C:\Users\%USERNAME%\AppData\Roaming\McNeel\Rhinoceros\6.0\scripts"
-- Move the whole "pyembroidery" directory to the scripts folder.
+  Open Explorer and go to `C:\Users\%USERNAME%\AppData\Roaming\McNeel\Rhinoceros\6.0\scripts`
+- Move the whole `pyembroidery` directory to the scripts folder.
 
-
-### 2. Install pyembroideryGH UserObjects
+#### 3. Install pyembroideryGH UserObjects
 
 - Navigate to the Grasshopper UserObjects folder. This can be done in two ways:
-  - Either open explorer and go to "C:\Users\%USERNAME%\AppData\Roaming\Grasshopper\UserObjects"
-  - Or open Rhino & Grasshopper and in the Grasshopper Window navigate to   File -> Special Folders -> User Object Folder
-- Move the whole "pyembroideryGH" directory to the UserObjects folder.
+  - Either open explorer and go to `C:\Users\%USERNAME%\AppData\Roaming\Grasshopper\UserObjects`
+  - Or open Rhino & Grasshopper and in the Grasshopper Window navigate to   **File -> Special Folders -> User Object Folder**
+- Move the whole `pyembroideryGH` directory to the UserObjects folder.
 
-### 3. Unblock the new UserObjects!
+#### 4. Unblock the new UserObjects!
 
-- Go into your "pyembroideryGH" folder inside Grasshoppers UserObjects folder
-- Right click onto the first UserObject and go to "Properties"
-- If the text "This file came from another computer [...]" is displayed click on "Unblock"!
-- REPEAT THIS FOR EVERY USEROBJECT IN THE FOLDER!
+- Go into your `pyembroideryGH` folder inside Grasshoppers UserObjects folder
+- Right click onto the first UserObject and go to **Properties**
+- If the text *This file came from another computer [...]* is displayed click on **Unblock**!
+- **Unfortunately you have to do this for _EVERY_ UserObject in the folder!**
