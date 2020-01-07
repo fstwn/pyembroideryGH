@@ -18,14 +18,21 @@ The purpose of this project is to enable Rhino and Grasshopper to directly read,
 
 #### 2. Install ironpyembroidery
 
-- Open the scripts folder of Rhino 6 by opening explorer and navigating to `C:\Users\%USERNAME%\AppData\Roaming\McNeel\Rhinoceros\6.0\scripts`
+- Open the scripts folder of Rhino 6 by opening explorer and navigating to
+  ```
+  C:\Users\%USERNAME%\AppData\Roaming\McNeel\Rhinoceros\6.0\scripts
+  ```
 - Move the whole `pyembroidery` directory to the scripts folder.
 
 #### 3. Install pyembroideryGH UserObjects
 
 - Navigate to the Grasshopper UserObjects folder. This can be done in two ways:
-  - Either open explorer and go to `C:\Users\%USERNAME%\AppData\Roaming\Grasshopper\UserObjects`
-  - Or open Rhino & Grasshopper and in the Grasshopper Window navigate to   **File -> Special Folders -> User Object Folder**
+  - Either open explorer and go to
+    ```
+    C:\Users\%USERNAME%\AppData\Roaming\Grasshopper\UserObjects
+    ```
+  - Or open Rhino & Grasshopper and in the Grasshopper Window navigate to
+    **File -> Special Folders -> User Object Folder**
 - Move the whole `pyembroideryGH` directory to the UserObjects folder.
 
 #### 4. Unblock the new UserObjects!
