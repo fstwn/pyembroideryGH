@@ -14,7 +14,7 @@ The purpose of this project is to enable Rhino and Grasshopper to directly read,
 
 ### 1. Download release files
 
-- On this repository site go to [releases](https://github.com/fstwn/pyembroideryGH/releases) and download the newest release
+- Go to [releases](https://github.com/fstwn/pyembroideryGH/releases) and download the newest release
 - Unzip the downloaded archive. You should get two folders `pyembroidery`, `pyembroideryGH` and a text-file.
 
 ### 2. Install ironpyembroidery
