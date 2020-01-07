@@ -1,3 +1,4 @@
 [submodule "ironpyembroidery"]
 	path = ironpyembroidery
 	url = https://github.com/fstwn/ironpyembroidery
+	branch = python27
