@@ -27,10 +27,10 @@ The purpose of this project is to enable Rhino and Grasshopper to directly read,
 ### 3. Install pyembroideryGH UserObjects
 
 - Navigate to the Grasshopper UserObjects folder. This can be done in two ways:
-  - Either open explorer and go to
+  - *EITHER* open explorer and go to
     
     `C:\Users\%USERNAME%\AppData\Roaming\Grasshopper\UserObjects`
-  - Or open Rhino & Grasshopper and in the Grasshopper Window click on
+  - *OR* open Rhino & Grasshopper and in the Grasshopper Window click on
 
     `File >> Special Folders >> User Object Folder`
 - Move the whole `pyembroideryGH` directory to the UserObjects folder.
