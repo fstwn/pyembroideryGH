@@ -11,7 +11,7 @@ pyembroidery.EmbPattern.
     Remarks:
         Author: Max Eschenbach
         License: MIT License
-        Version: 200831
+        Version: 201022
 """
 
 # PYTHON STANDARD LIBRARY IMPORTS
@@ -24,7 +24,7 @@ import Rhino
 import rhinoscriptsyntax as rs
 
 # GHENV COMPONENT SETTINGS
-ghenv.Component.Name = "PatternColorblocks"
+ghenv.Component.Name = "PatternColorBlocks"
 ghenv.Component.NickName = "PCB"
 ghenv.Component.Category = "pyembroideryGH"
 ghenv.Component.SubCategory = "2 Pattern Analysis"
@@ -38,7 +38,7 @@ except ImportError:
               "path, see README for instructions!.")
     raise ImportError(errMsg)
 
-class PatternColorblocks(component):
+class PatternColorBlocks(component):
     
     def RunScript(self, PatternTree):
         # initialize outputs
@@ -80,8 +80,13 @@ class PatternColorblocks(component):
                     # loop through all of the blocks of stitches
                     for u, block in enumerate(blocks):
                         stitches = list(block)
-                        stitches = [",".join([str(s) for s in st])
-                                    for st in stitches]
+                        for k, stitch in enumerate(stitches):
+                            stitch = [stitch[0] * 0.1,
+                                      stitch[1] * -0.1,
+                                      stitch[2]]
+                            stitch = [str(s) for s in stitch]
+                            stitch = ",".join(stitch)
+                            stitches[k] = stitch
                         
                         # create the new tree path by modding the original path
                         path = list(branch_path)
