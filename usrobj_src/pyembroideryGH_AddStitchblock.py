@@ -1,67 +1,113 @@
-"""Adds a stitchblock to an embroidery pattern supplied as
+"""
+Adds one or many StitchBlocks to an embroidery pattern supplied as
 pyembroidery.EmbPattern instance
-            Inputs:
-                Pattern: The pattern to be modified as
-                pyembroidery.EmbPattern instance. This works only on a single
-                pattern for now!
-                Stitch: The stitchblocks to add to the pattern. If a
-                tree is supplied, each branch will be treated as one block.
-                Thread: The threads for the pattern, corresponding to
-                the blocks of stitches. The paths of the block and the thread
-                have to correspond, otherwise the thread won't be found.
-                If there's more than one thread in the branch, only the first
-                thread will be used!
-            Output:
-                PatternOut: The modified pattern with the stitchblocks added
-            Remarks:
-                Author: Max Eschenbach
-                License: Apache License 2.0
-                Version: 191104"""
+    Inputs:
+        Pattern: The pattern to be modified as pyembroidery.EmbPattern 
+                 instance.
+                 {item, EmbPattern}
+        StitchBlock: The stitchblock(s) to add to the pattern.
+                     {list, StitchBlock}
+    Output:
+        Pattern: The modified pattern with the newly added stitchblock(s).
+                 {item/list/tree, EmbPattern}
+    Remarks:
+        Author: Max Eschenbach
+        License: MIT License
+        Version: 201022
+"""
 
+# PYTHON STANDARD LIBRARY IMPORTS
 from __future__ import division
+
+# GHPYTHON SDK IMPORTS
 from ghpythonlib.componentbase import executingcomponent as component
 import Grasshopper, GhPython
 import System
 import Rhino
 import rhinoscriptsyntax as rs
-import pyembroidery
 
-ghenv.Component.Name = "AddStitchblock"
+# GHENV COMPONENT SETTINGS
+ghenv.Component.Name = "AddStitchBlock"
 ghenv.Component.NickName = "ASB"
 ghenv.Component.Category = "pyembroideryGH"
 ghenv.Component.SubCategory = "3 Pattern Creation"
 
-__author__ = "Max Eschenbach"
-__version__ = "2019.11.04"
+# LOCAL MODULE IMPORTS
+try:
+    import pyembroidery
+except ImportError:
+    errMsg = ("The pyembroidery python module seems to be not correctly " +
+              "installed! Please make sure the module is in you search " +
+              "path, see README for instructions!.")
+    raise ImportError(errMsg)
 
-class MyComponent(component):
-
-    def RunScript(self, Pattern, Stitchblock):
-        # initialize outputs
-        PatternOut = Grasshopper.DataTree[object]()
-
-        # copy the input pattern to avoid modification on the original object
-        if isinstance(Pattern, pyembroidery.EmbPattern) == True:
-            cPattern = Pattern.copy()
+class StitchBlock(object):
+    
+    def __init__(self, stitches, thread):
+        self._set_stitches(stitches)
+        self._set_thread(thread)
+    
+    def __getitem__(self, item):
+        return (self.stitches, self.thread)[item]
+    
+    def get_stitches_iter(self):
+        for s in self._stitches:
+            yield s
+    
+    def _get_stitches(self):
+        return self._stitches
+    
+    def _set_stitches(self, stitches):
+        if isinstance(stitches, list):
+            self._stitches = stitches
+        elif isinstance(stitches, tuple):
+            self._stitches = list(stitches)
         else:
-            raise TypeError("Supplied pattern is no valid " + \
-                            "pyembroidery.EmbPattern instance! " + \
+            raise ValueError("Supplied data for stitches is not a valid list " +
+                             "of stitches!")
+    
+    stitches = property(_get_stitches, _set_stitches, None,
+                        "The stitches of this StitchBlock")
+    
+    def _get_thread(self):
+        return self._thread
+    
+    def _set_thread(self, thread):
+        if isinstance(thread, pyembroidery.EmbThread):
+            self._thread = thread
+        else:
+            raise ValueError("Supplied thread is not a valid EmbThread " + 
+                             "instance!")
+    
+    thread = property(_get_thread, _set_thread, None,
+                      "The thread of this StitchBlock")
+    
+    def ToString(self):
+        descr = "StitchBlock ({} Stitches, EmbThread {})"
+        color = self.thread.hex_color()
+        descr = descr.format(len(self.stitches), color)
+        return descr
+
+class AddStitchBlock(component):
+
+    def RunScript(self, pattern_in, stitchblock):
+        # initialize outputs
+        Pattern = Grasshopper.DataTree[object]()
+        
+        # copy the input pattern to avoid modification on the original object
+        if isinstance(pattern_in, pyembroidery.EmbPattern):
+            pattern_in = pattern_in.copy()
+        else:
+            raise TypeError("Supplied pattern is no valid " +
+                            "pyembroidery.EmbPattern instance! " +
                             "Please check your inputs and try again.")
-
-        # loop over all branches of the stitchblock tree
-        for i in range(Stitchblock.BranchCount):
-            branchList = Stitchblock.Branch(i)
-            branchPath = Stitchblock.Path(i)
-
-            # loop over all items in the current branch
-            for j in range(branchList.Count):
-                sBlock = branchList[j]
-
-                # add stitchblock to the pattern
-                cPattern.add_stitchblock(sBlock)
-
+        
+        # loop over all stitchblocks and add to pattern
+        for i, sb in enumerate(stitchblock):
+            pattern_in.add_stitchblock(sb)
+        
         # add pattern to output tree
-        PatternOut.Add(cPattern)
+        Pattern.Add(pattern_in)
 
         # return outputs if you have them; here I try it for you:
-        return PatternOut
+        return Pattern
