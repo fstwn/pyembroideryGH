@@ -1,70 +1,123 @@
-"""Provides a scripting component.
-            Inputs:
-                Stitch: The x script variable
-                Thread: The y script variable
-            Output:
-                Stitchblock: The a output variable
-            Remarks:
-                Author: Max Eschenbach
-                License: Apache License 2.0
-                Version: 191104"""
+"""
+Compile a StitchBlock from a list of stitches and a thread.
+    Inputs:
+        Stitches: The stitches to compile into a stitchblock.
+                  {list, stitch}
+        Thread: The thread to be attached to the stitchblock.
+                {item, EmbThread}
+    Output:
+        StitchBlock: The newly compiled stitchblocks, containing the stitches
+                     with the respective thread attached to it.
+                     {item/list/tree, StitchBlock}
+    Remarks:
+        Author: Max Eschenbach
+        License: MIT License
+        Version: 201022
+"""
 
+# PYTHON STANDARD LIBRARY IMPORTS
 from __future__ import division
+import re
+
+# GHPYTHON SDK IMPORTS
 from ghpythonlib.componentbase import executingcomponent as component
 import Grasshopper, GhPython
 import System
 import Rhino
 import rhinoscriptsyntax as rs
-import pyembroidery
 
-ghenv.Component.Name = "ConstructStitchblock"
+# GHENV COMPONENT SETTINGS
+ghenv.Component.Name = "ConstructStitchBlock"
 ghenv.Component.NickName = "CSB"
 ghenv.Component.Category = "pyembroideryGH"
 ghenv.Component.SubCategory = "3 Pattern Creation"
 
-__author__ = "Max Eschenbach"
-__version__ = "2019.11.04"
+# LOCAL MODULE IMPORTS
+try:
+    import pyembroidery
+except ImportError:
+    errMsg = ("The pyembroidery python module seems to be not correctly " +
+              "installed! Please make sure the module is in you search " +
+              "path, see README for instructions!.")
+    raise ImportError(errMsg)
 
-class MyComponent(component):
+class StitchBlock(object):
+    
+    def __init__(self, stitches, thread):
+        self._set_stitches(stitches)
+        self._set_thread(thread)
+    
+    def __getitem__(self, item):
+        return (self.stitches, self.thread)[item]
+    
+    def get_stitches_iter(self):
+        for s in self._stitches:
+            yield s
+    
+    def _get_stitches(self):
+        return self._stitches
+    
+    def _set_stitches(self, stitches):
+        if isinstance(stitches, list):
+            self._stitches = stitches
+        elif isinstance(stitches, tuple):
+            self._stitches = list(stitches)
+        else:
+            raise ValueError("Supplied data for stitches is not a valid list " +
+                             "of stitches!")
+    
+    stitches = property(_get_stitches, _set_stitches, None,
+                        "The stitches of this StitchBlock")
+    
+    def _get_thread(self):
+        return self._thread
+    
+    def _set_thread(self, thread):
+        if isinstance(thread, pyembroidery.EmbThread):
+            self._thread = thread
+        else:
+            raise ValueError("Supplied thread is not a valid EmbThread " + 
+                             "instance!")
+    
+    thread = property(_get_thread, _set_thread, None,
+                      "The thread of this StitchBlock")
+    
+    def ToString(self):
+        descr = "StitchBlock ({} Stitches, EmbThread {})"
+        color = self.thread.hex_color()
+        descr = descr.format(len(self.stitches), color)
+        return descr
 
-    def RunScript(self, Stitch, Thread):
-        # initialize output
-        Stitchblock = Grasshopper.DataTree[object]()
-
-        # loop over all branches of the stitch tree
-        for i in range(Stitch.BranchCount):
-            branchList = Stitch.Branch(i)
-            branchPath = Stitch.Path(i)
-
-            # find the corresponding thread
-            if Thread.PathExists(branchPath):
-                try:
-                    tList = list(Thread.Branch(branchPath))
-                    thread = tList[0]
-                    # ensure that threads are real threads
-                    if isinstance(thread, \
-                    pyembroidery.EmbThread) != True:
-                        raise TypeError("Supplied threads are no valid " + \
-                                        "pyembroidery.EmbThread instances! " + \
-                                        "Please check your inputs and try " + \
-                                        "again.")
-                except IndexError:
-                    thread = None
-            else:
-                thread = None
-
-            # convert stitches to a block
-            block = []
-            for j in range(branchList.Count):
+class ConstructStitchBlock(component):
+    
+    def RunScript(self, Stitches, Thread):
+        # regex pattern for matching stitch strings
+        regex = re.compile(r'^([+-]?(\d+([.]\d*)?([eE][+-]?\d+)?|[.]\d+([eE][+-]?\d+)?)[,]){2}[-+]?[0-9]+$')
+        
+        # check and extract stitches, compile valid_stitches
+        valid_stitches = []
+        for i, stitch in enumerate(Stitches):
+            if bool(regex.match(stitch)):
                 # convert the stitch
-                stitch = branchList[j].split(",")
+                stitch = stitch.split(",")
                 stitch = (float(stitch[0]), float(stitch[1]), int(stitch[2]))
-                block.append(stitch)
-
-            sBlock = [block, thread]
-
-            # add stitchblocks to output
-            Stitchblock.Add(sBlock, branchPath)
-
+                valid_stitches.append(stitch)
+            else:
+                rml = self.RuntimeMessageLevel.Warning
+                errMsg = ("{}. stitch at index {} is not a " +
+                          "valid stitch string! Skipping this stitch!")
+                errMsg = errMsg.format(i, self.RunCount)
+                self.AddRuntimeMessage(rml, errMsg)
+        
+        # create stitchblock
+        try:
+            sblock = StitchBlock(valid_stitches, Thread)
+        except Exception, e:
+            rml = self.RuntimeMessageLevel.Warning
+            errMsg = "Could not create StitchBlock at index {}!"
+            errMsg = " ".join([errMsg, e]).format(self.RunCount)
+            self.AddRuntimeMessage(rml, errMsg)
+            sblock = None
+        
         # return outputs if you have them; here I try it for you:
-        return Stitchblock
+        return sblock
