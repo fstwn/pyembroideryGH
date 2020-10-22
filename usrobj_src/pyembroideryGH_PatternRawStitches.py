@@ -13,7 +13,7 @@ as an instance of pyembroidery.EmbPattern.
     Remarks:
         Author: Max Eschenbach
         License: MIT License
-        Version: 200831
+        Version: 201022
 """
 
 # PYTHON STANDARD LIBRARY IMPORTS
@@ -27,8 +27,8 @@ import Rhino
 import rhinoscriptsyntax as rs
 
 # GHENV COMPONENT SETTINGS
-ghenv.Component.Name = "PatternStitches"
-ghenv.Component.NickName = "PSS"
+ghenv.Component.Name = "PatternRawStitches"
+ghenv.Component.NickName = "PRS"
 ghenv.Component.Category = "pyembroideryGH"
 ghenv.Component.SubCategory = "2 Pattern Analysis"
 
@@ -41,7 +41,7 @@ except ImportError:
               "path, see README for instructions!.")
     raise ImportError(errMsg)
 
-class PatternStitches(component):
+class PatternRawStitches(component):
 
     def RunScript(self, Pattern):
         # initialize outputs
@@ -66,8 +66,8 @@ class PatternStitches(component):
             stitches = zip(*list(Pattern.get_as_stitches()))
             
             # collect the relevant data and assign it to the outputs
-            X = tuple([s*0.1 for s in stitches[1]])
-            Y = tuple([s*0.1 for s in stitches[2]])
+            X = tuple([s * 0.1 for s in stitches[1]])
+            Y = tuple([s * -0.1 for s in stitches[2]])
             Cmd = stitches[3]
             Thread = stitches[4]
             Needle = stitches[5]
