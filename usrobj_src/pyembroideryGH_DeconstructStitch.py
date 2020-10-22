@@ -14,7 +14,7 @@ coordinates as well as an integer identifying the command.
     Remarks:
         Author: Max Eschenbach
         License: MIT License
-        Version: 200831
+        Version: 201022
 """
 
 # GHPYTHON SDK IMPORTS
@@ -66,10 +66,8 @@ class DeconstructStitch(component):
                         # split the string in its components
                         parts = stitch_string.split(',')
                         # add each component to its respective output tree
-                        # !! WE MULTIPLY ALL COORDINATES WITH 0.1 BECAUSE ONE !!
-                        # !! UNIT IN PYEMBROIDERY IS 1/10th OF A MILLIMETER   !!
-                        X.Add(float(parts[0]) * 0.1, branch_path)
-                        Y.Add(float(parts[1]) * 0.1, branch_path)
+                        X.Add(float(parts[0]), branch_path)
+                        Y.Add(float(parts[1]), branch_path)
                         Cmd.Add(int(parts[2]), branch_path)
                     else:
                         rml = self.RuntimeMessageLevel.Warning
