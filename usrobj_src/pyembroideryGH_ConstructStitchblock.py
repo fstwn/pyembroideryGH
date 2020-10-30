@@ -12,7 +12,7 @@ Compile a StitchBlock from a list of stitches and a thread.
     Remarks:
         Author: Max Eschenbach
         License: MIT License
-        Version: 201022
+        Version: 201030
 """
 
 # PYTHON STANDARD LIBRARY IMPORTS
@@ -91,33 +91,44 @@ class StitchBlock(object):
 class ConstructStitchBlock(component):
     
     def RunScript(self, Stitches, Thread):
-        # regex pattern for matching stitch strings
-        regex = re.compile(r'^([+-]?(\d+([.]\d*)?([eE][+-]?\d+)?|[.]\d+([eE][+-]?\d+)?)[,]){2}[-+]?[0-9]+$')
         
-        # check and extract stitches, compile valid_stitches
-        valid_stitches = []
-        for i, stitch in enumerate(Stitches):
-            if bool(regex.match(stitch)):
-                # convert the stitch
-                stitch = stitch.split(",")
-                stitch = (float(stitch[0]), float(stitch[1]), int(stitch[2]))
-                valid_stitches.append(stitch)
-            else:
+        if Stitches and Thread:
+            # regex pattern for matching stitch strings
+            regex = re.compile(r'^([+-]?(\d+([.]\d*)?([eE][+-]?\d+)?|[.]\d+([eE][+-]?\d+)?)[,]){2}[-+]?[0-9]+$')
+            
+            # check and extract stitches, compile valid_stitches
+            valid_stitches = []
+            for i, stitch in enumerate(Stitches):
+                if bool(regex.match(stitch)):
+                    # convert the stitch
+                    stitch = stitch.split(",")
+                    stitch = (float(stitch[0]), float(stitch[1]), int(stitch[2]))
+                    valid_stitches.append(stitch)
+                else:
+                    rml = self.RuntimeMessageLevel.Warning
+                    errMsg = ("{}. stitch at index {} is not a " +
+                              "valid stitch string! Skipping this stitch!")
+                    errMsg = errMsg.format(i, self.RunCount)
+                    self.AddRuntimeMessage(rml, errMsg)
+            
+            # create stitchblock
+            try:
+                sblock = StitchBlock(valid_stitches, Thread)
+            except Exception, e:
                 rml = self.RuntimeMessageLevel.Warning
-                errMsg = ("{}. stitch at index {} is not a " +
-                          "valid stitch string! Skipping this stitch!")
-                errMsg = errMsg.format(i, self.RunCount)
+                errMsg = "Could not create StitchBlock at index {}!"
+                errMsg = " ".join([errMsg, e]).format(self.RunCount)
                 self.AddRuntimeMessage(rml, errMsg)
-        
-        # create stitchblock
-        try:
-            sblock = StitchBlock(valid_stitches, Thread)
-        except Exception, e:
+                sblock = None
+        else:
+            sblock = Grasshopper.DataTree[object]()
             rml = self.RuntimeMessageLevel.Warning
-            errMsg = "Could not create StitchBlock at index {}!"
-            errMsg = " ".join([errMsg, e]).format(self.RunCount)
-            self.AddRuntimeMessage(rml, errMsg)
-            sblock = None
+            if not Stitches:
+                errMsg = ("Input Stitches failed to collect data!")
+                self.AddRuntimeMessage(rml, errMsg)
+            if not Thread:
+                errMsg = ("Input Thread failed to collect data!")
+                self.AddRuntimeMessage(rml, errMsg)
         
         # return outputs if you have them; here I try it for you:
         return sblock
