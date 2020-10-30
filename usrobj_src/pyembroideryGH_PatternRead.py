@@ -10,7 +10,7 @@ pattern as an instance of pyembroidery.EmbPattern
     Remarks:
         Author: Max Eschenbach
         License: MIT License
-        Version: 200831
+        Version: 201030
 """
 
 # PYTHON STANDARD LIBRARY IMPORTS
@@ -55,6 +55,10 @@ class PatternRead(component):
                 errMsg = ("Could not read embroidery file!" +
                           "Please check if format is readable.")
                 self.AddRuntimeMessage(rml, errMsg)
+        else:
+            rml = self.RuntimeMessageLevel.Warning
+            errMsg = ("Input FilePath failed to collect data!")
+            self.AddRuntimeMessage(rml, errMsg)
         
         # return outputs if you have them; here I try it for you:
         return Pattern
