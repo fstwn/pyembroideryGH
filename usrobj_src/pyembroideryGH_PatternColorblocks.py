@@ -11,12 +11,13 @@ pyembroidery.EmbPattern.
     Remarks:
         Author: Max Eschenbach
         License: MIT License
-        Version: 201022
+        Version: 201030
 """
 
 # PYTHON STANDARD LIBRARY IMPORTS
 from __future__ import division
 
+# GHPYTHON SDK IMPORTS
 from ghpythonlib.componentbase import executingcomponent as component
 import Grasshopper, GhPython
 import System
@@ -46,7 +47,7 @@ class PatternColorBlocks(component):
         Thread = Grasshopper.DataTree[object]()
         
         # only do something if there is an input to begin with.
-        if PatternTree != None:
+        if PatternTree != None and PatternTree.DataCount:
             # loop through all branches of the incoming tree(s)
             for i, branch in enumerate(PatternTree.Branches):
                 branch_path = PatternTree.Path(i)
@@ -107,6 +108,10 @@ class PatternColorBlocks(component):
                         
                         # add all the threads to the output tree
                         Thread.Add(thread, path)
+        else:
+            rml = self.RuntimeMessageLevel.Warning
+            errMsg = ("Input Pattern failed to collect data!")
+            self.AddRuntimeMessage(rml, errMsg)
         
         # return outputs if you have them; here I try it for you:
         return Stitch, Thread
