@@ -13,7 +13,7 @@ as an instance of pyembroidery.EmbPattern.
     Remarks:
         Author: Max Eschenbach
         License: MIT License
-        Version: 201022
+        Version: 201030
 """
 
 # PYTHON STANDARD LIBRARY IMPORTS
@@ -74,7 +74,7 @@ class PatternRawStitches(component):
             Order = stitches[6]
         else:
             rml = self.RuntimeMessageLevel.Warning
-            errMsg = ("Expected EmbPattern, got None!")
+            errMsg = ("Input Pattern failed to collect data!")
             self.AddRuntimeMessage(rml, errMsg)
 
         # return outputs if you have them; here I try it for you:
