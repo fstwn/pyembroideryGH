@@ -2,7 +2,7 @@
 Writes one or many embroidery patterns to one or many files. If multiple
 patterns are supplied but only one filepath, additional filepaths in the
 same folder with the indices of the pattern as suffix will be created!
-
+---
 Supported file formats are:
 *.pec, *.pes, *.exp, *.dst, *.jef, *.vp3, *.csv, *.xxx, *.sew, *.u01, *.shv,
 *.10o, *.100, *.bro, *.dat, *.dsb, *.dsz, *.emd, *.exy, *.fxy, *.gt, *.inb,
@@ -19,7 +19,7 @@ Supported file formats are:
     Remarks:
         Author: Max Eschenbach
         License: MIT License
-        Version: 201022
+        Version: 201030
 """
 
 # PYTHON STANDARD LIBRARY IMPORTS
