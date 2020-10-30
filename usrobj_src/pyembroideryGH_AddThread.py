@@ -1,34 +1,45 @@
-"""Adds one or many threads to the design (pattern)
+"""
+Adds one or many threads to the design (pattern)
 Note: this has no effect on stitching and can be done at any point
-            Inputs:
-                Pattern: The pattern to be modified as
-                pyembroidery.EmbPattern instance. This works only on a single
-                pattern for now!
-                Thread: The thread or threads to add to the pattern
-            Output:
-                PatternOut: The modified pattern with the threads added
-            Remarks:
-                Author: Max Eschenbach
-                License: Apache License 2.0
-                Version: 191104"""
+    Inputs:
+        Pattern: The pattern to be modified as
+        pyembroidery.EmbPattern instance. This works only on a single
+        pattern for now!
+        Thread: The thread or threads to add to the pattern
+    Output:
+        PatternOut: The modified pattern with the threads added
+    Remarks:
+        Author: Max Eschenbach
+        License: Apache License 2.0
+        Version: 191104
+"""
 
+# PYTHON STANDARD LIBRARY IMPORTS
 from __future__ import division
+
+# GHPYTHON SDK IMPORTS
 from ghpythonlib.componentbase import executingcomponent as component
 import Grasshopper, GhPython
 import System
 import Rhino
 import rhinoscriptsyntax as rs
-import pyembroidery
 
+# GHENV COMPONENT SETTINGS
 ghenv.Component.Name = "AddThread"
 ghenv.Component.NickName = "AT"
 ghenv.Component.Category = "pyembroideryGH"
 ghenv.Component.SubCategory = "3 Pattern Creation"
 
-__author__ = "Max Eschenbach"
-__version__ = "2019.11.04"
+# LOCAL MODULE IMPORTS
+try:
+    import pyembroidery
+except ImportError:
+    errMsg = ("The pyembroidery python module seems to be not correctly " +
+              "installed! Please make sure the module is in you search " +
+              "path, see README for instructions!.")
+    raise ImportError(errMsg)
 
-class MyComponent(component):
+class AddThread(component):
 
     def RunScript(self, Pattern, Thread):
         # initialize outputs
