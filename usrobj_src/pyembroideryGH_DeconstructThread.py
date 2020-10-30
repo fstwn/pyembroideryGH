@@ -23,7 +23,7 @@ The thread has to be supplied as an instance of pyembroidery.EmbThread.
     Remarks:
         Author: Max Eschenbach
         License: MIT License
-        Version: 200831
+        Version: 201030
 """
 
 # PYTHON STANDARD LIBRARY IMPORTS
@@ -67,7 +67,7 @@ class DeconstructThread(component):
         Weight = Grasshopper.DataTree[object]()
         
         # only execute if there is a thread supplied to begin with
-        if ThreadTree != None:
+        if ThreadTree != None and ThreadTree.DataCount:
            # loop over branches of the thread tree
             for i, branch in enumerate(ThreadTree.Branches):
                 branch_path = ThreadTree.Path(i)
@@ -101,6 +101,10 @@ class DeconstructThread(component):
                         Brand.Add(None, branch_path)
                         Chart.Add(None, branch_path)
                         Weight.Add(None, branch_path)
+        else:
+            rml = self.RuntimeMessageLevel.Warning
+            errMsg = "Input Thread failed to collect data!"
+            self.AddRuntimeMessage(rml, errMsg)
         
         # return outputs if you have them; here I try it for you:
         return ColorRGB, Description, CatalogNr, Details, Brand, Chart, Weight
