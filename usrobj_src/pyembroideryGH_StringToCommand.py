@@ -11,7 +11,7 @@ its integer representation.
     Remarks:
         Author: Max Eschenbach
         License: MIT License
-        Version: 200831
+        Version: 201030
 """
 
 # PYTHON STANDARD LIBRARY IMPORTS
@@ -49,7 +49,7 @@ class StringToCommand(component):
         command_dict = pyembroidery.get_command_dictionary()
         
         # only do sth if there is valid input to begin with
-        if CmdStrTree != None:
+        if CmdStrTree != None and CmdStrTree.DataCount:
             # loop through all branches of the tree
             for i, branch in enumerate(CmdStrTree.Branches):
                 branch_path = CmdStrTree.Path(i)
@@ -68,6 +68,10 @@ class StringToCommand(component):
                         errMsg = errMsg.format(command, i, j)
                         self.AddRuntimeMessage(rml, errMsg)
                         Cmd.Add(None, branch_path)
+        else:
+            rml = self.RuntimeMessageLevel.Warning
+            errMsg = "Input CmdStr failed to collect data!"
+            self.AddRuntimeMessage(rml, errMsg)
         
         # return outputs if you have them; here I try it for you:
         return Cmd
