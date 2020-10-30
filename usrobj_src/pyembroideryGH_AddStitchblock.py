@@ -13,7 +13,7 @@ pyembroidery.EmbPattern instance
     Remarks:
         Author: Max Eschenbach
         License: MIT License
-        Version: 201022
+        Version: 201030
 """
 
 # PYTHON STANDARD LIBRARY IMPORTS
@@ -94,20 +94,29 @@ class AddStitchBlock(component):
         # initialize outputs
         Pattern = Grasshopper.DataTree[object]()
         
-        # copy the input pattern to avoid modification on the original object
-        if isinstance(pattern_in, pyembroidery.EmbPattern):
-            pattern_in = pattern_in.copy()
+        if pattern_in is not None and stitchblock:
+            # copy the input pattern to avoid modification on the original object
+            if isinstance(pattern_in, pyembroidery.EmbPattern):
+                pattern_in = pattern_in.copy()
+            else:
+                raise TypeError("Supplied pattern is no valid " +
+                                "pyembroidery.EmbPattern instance! " +
+                                "Please check your inputs and try again.")
+            
+            # loop over all stitchblocks and add to pattern
+            for i, sb in enumerate(stitchblock):
+                pattern_in.add_stitchblock(sb)
+            
+            # add pattern to output tree
+            Pattern.Add(pattern_in)
         else:
-            raise TypeError("Supplied pattern is no valid " +
-                            "pyembroidery.EmbPattern instance! " +
-                            "Please check your inputs and try again.")
+            rml = self.RuntimeMessageLevel.Warning
+            if pattern_in is None:
+                errMsg = ("Input Pattern failed to collect data!")
+                self.AddRuntimeMessage(rml, errMsg)
+            if not stitchblock:
+                errMsg = ("Input StitchBlock failed to collect data!")
+                self.AddRuntimeMessage(rml, errMsg)
         
-        # loop over all stitchblocks and add to pattern
-        for i, sb in enumerate(stitchblock):
-            pattern_in.add_stitchblock(sb)
-        
-        # add pattern to output tree
-        Pattern.Add(pattern_in)
-
         # return outputs if you have them; here I try it for you:
         return Pattern
