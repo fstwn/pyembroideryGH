@@ -1,51 +1,63 @@
-"""Returns a pattern with all multiple jumps merged.
-            Inputs:
-                Pattern: The embroidery pattern to merge jumps
-                as pyembroidery.EmbPattern instance
-            Output:
-                PatternOut: The embroidery pattern with all multiple jumps
-                merged as pyembroidery.EmbPattern instance
-            Remarks:
-                Author: Max Eschenbach
-                License: Apache License 2.0
-                Version: 191104"""
+"""
+Returns a pattern with all multiple jumps merged.
+    Inputs:
+        Pattern: The embroidery pattern to merge jumps as
+                 pyembroidery.EmbPattern instance
+                 {item, EmbPattern}
+    Output:
+        Pattern: The embroidery pattern with all multiple jumps merged as 
+                 pyembroidery.EmbPattern instance
+                 {item/list/tree, EmbPattern}
+    Remarks:
+        Author: Max Eschenbach
+        License: Apache License 2.0
+        Version: 201030
+"""
 
+# PYTHON STANDARD LIBRARY INPUTS
 from __future__ import division
+
+# GHPYTHON SDK IMPORTS
 from ghpythonlib.componentbase import executingcomponent as component
 import Grasshopper, GhPython
 import System
 import Rhino
 import rhinoscriptsyntax as rs
-import pyembroidery
 
+# GHENV COMPONENT SETTINGS
 ghenv.Component.Name = "PatternMergeJumps"
 ghenv.Component.NickName = "PMJ"
 ghenv.Component.Category = "pyembroideryGH"
 ghenv.Component.SubCategory = "4 Utility"
 
-__author__ = "Max Eschenbach"
-__version__ = "2019.11.04"
+# LOCAL MODULE IMPORTS
+try:
+    import pyembroidery
+except ImportError:
+    errMsg = ("The pyembroidery python module seems to be not correctly " +
+              "installed! Please make sure the module is in you search " +
+              "path, see README for instructions!.")
+    raise ImportError(errMsg)
 
-class MyComponent(component):
+class MergeJumps(component):
 
-    def RunScript(self, Pattern):
+    def RunScript(self, input_pattern):
         # initialize output as empty GH tree
-        PatternOut = Grasshopper.DataTree[object]()
-
-        # loop through all branches of the incoming tree
-        for i in range(Pattern.BranchCount):
-            branchList = Pattern.Branch(i)
-            branchPath = Pattern.Path(i)
-            # loop through all items in current branch
-            for j in range(branchList.Count):
-                # make sure supplied pattern is really a valid pattern
-                if not isinstance(branchList[j], pyembroidery.EmbPattern):
-                    raise TypeError("The supplied pattern is not a valid " + \
-                                    "pyembroidery.EmbPattern instance!")
-                # don't modify the incoming pattern, make a copy and modify that
-                cPattern = branchList[j].get_pattern_merge_jumps()
-                # add modified pattern to output tree
-                PatternOut.Add(cPattern, branchPath)
-
+        Pattern = Grasshopper.DataTree[object]()
+        
+        # make sure supplied pattern is really a valid pattern
+        if input_pattern:
+            if not isinstance(input_pattern, pyembroidery.EmbPattern):
+                raise TypeError("The supplied pattern is not a valid " +
+                                "pyembroidery.EmbPattern instance!")
+            else:
+                # don't modify the incoming pattern, make a copy and modify
+                Pattern = input_pattern.get_pattern_merge_jumps()
+        else:
+            rml = self.RuntimeMessageLevel.Warning
+            errMsg = ("Input Pattern failed to collect data!")
+            self.AddRuntimeMessage(rml, errMsg)
+        
+        
         # return outputs if you have them; here I try it for you:
-        return PatternOut
+        return Pattern
