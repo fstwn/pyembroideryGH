@@ -3,15 +3,19 @@ Adds one or many threads to the design (pattern)
 Note: this has no effect on stitching and can be done at any point
     Inputs:
         Pattern: The pattern to be modified as
-        pyembroidery.EmbPattern instance. This works only on a single
-        pattern for now!
-        Thread: The thread or threads to add to the pattern
+                 pyembroidery.EmbPattern instance.
+                 {item, EmbPattern}
+        Thread: The thread or multiple threads to add to the pattern as
+                pyembroidery.EmbThread instanc.
+                {list, EmbThread}
     Output:
-        PatternOut: The modified pattern with the threads added
+        Pattern: The modified pattern with the thread or multiple threads
+                 added.
+                 {item/list/tree, EmbPattern}
     Remarks:
         Author: Max Eschenbach
         License: Apache License 2.0
-        Version: 191104
+        Version: 201103
 """
 
 # PYTHON STANDARD LIBRARY IMPORTS
@@ -41,39 +45,40 @@ except ImportError:
 
 class AddThread(component):
 
-    def RunScript(self, Pattern, Thread):
+    def RunScript(self, input_pattern, Thread):
         # initialize outputs
-        PatternOut = Grasshopper.DataTree[object]()
-        cPattern = None
-
-        # copy the input pattern to avoid modification on the original object
-        if isinstance(Pattern, pyembroidery.EmbPattern) == True:
-            cPattern = Pattern.copy()
+        Pattern = Grasshopper.DataTree[object]()
+        
+        # check if valid data is coming in
+        if input_pattern != None and Thread:
+            # check if pattern is valid
+            if not isinstance(input_pattern, pyembroidery.EmbPattern):
+                raise TypeError("The supplied pattern is not a valid " +
+                                "pyembroidery.EmbPattern instance!")
+            
+            # copy input pattern to avoid changing the original
+            Pattern = input_pattern.copy()
+            # loop over supplied list of threads
+            for i, thrd in enumerate(Thread):
+                if not isinstance(thrd, pyembroidery.EmbThread):
+                    rml = self.RuntimeMessageLevel.Warning
+                    errMsg = ("{}. thread at index {} is not a " +
+                              "valid pyembroidery.EmbThread instance! " +
+                              "Skipping this thread!")
+                    errMsg = errMsg.format(i, self.RunCount)
+                    self.AddRuntimeMessage(rml, errMsg)
+                else:
+                    # add thread to pattern
+                    Pattern.add_thread(thrd)
         else:
-            raise TypeError("Supplied pattern is no valid " + \
-                            "pyembroidery.EmbPattern instance! " + \
-                            "Please check your inputs and try again.")
-
-        # loop over all branches of the thread tree
-        for i in range(Thread.BranchCount):
-            branchList = Thread.Branch(i)
-            branchPath = Thread.Path(i)
-
-            # loop over all items in the current branch of threads
-            for j in range(branchList.Count):
-                thrd = branchList[j]
-                print thrd
-                # ensure that threads are real threads
-                if isinstance(thrd, pyembroidery.EmbThread) != True:
-                    raise TypeError("Supplied threads are no valid " + \
-                                    "pyembroidery.EmbThread instances! " + \
-                                    "Please check your inputs and try " + \
-                                    "again.")
-                # add threads to pattern
-                cPattern.add_thread(thrd)
-
-        # define outputs
-        PatternOut = cPattern
-
+            if input_pattern == None:
+                rml = self.RuntimeMessageLevel.Warning
+                errMsg = ("Input Pattern failed to collect data!")
+                self.AddRuntimeMessage(rml, errMsg)
+            if not Thread:
+                rml = self.RuntimeMessageLevel.Warning
+                errMsg = ("Input Thread failed to collect data!")
+                self.AddRuntimeMessage(rml, errMsg)
+        
         # return outputs if you have them; here I try it for you:
-        return PatternOut
+        return Pattern
