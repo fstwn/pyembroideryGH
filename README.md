@@ -17,7 +17,7 @@ The purpose of this project is to enable Rhino and Grasshopper to directly read,
 - Go to [releases](https://github.com/fstwn/pyembroideryGH/releases) and download the newest release
 - Unzip the downloaded archive. You should get three folders `pyembroidery`, `pyembroideryGH`, `Examples` and a text-file.
 
-### 2. Install python modules
+### 2. Install pyembroidery python module
 
 - Open the scripts folder of Rhino 6
   - On **Windows**:
