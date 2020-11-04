@@ -10,8 +10,8 @@ Gets the threads of one or many input patterns
                 {item/list/tree, EmbThread}
     Remarks:
         Author: Max Eschenbach
-        License: Apache License 2.0
-        Version: 201030
+        License: MIT License
+        Version: 201104
 """
 
 # PYTHON STANDARD LIBRARY IMPORTS

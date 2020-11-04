@@ -8,8 +8,8 @@ Gets a stablized version of the pattern
                  {item/list/tree, EmbPattern}
     Remarks:
         Author: Max Eschenbach
-        License: Apache License 2.0
-        Version: 201030
+        License: MIT License
+        Version: 201104
 """
 
 # PYTHON STANDARD LIBRARY INPUTS

@@ -14,8 +14,8 @@ Note: this has no effect on stitching and can be done at any point
                  {item/list/tree, EmbPattern}
     Remarks:
         Author: Max Eschenbach
-        License: Apache License 2.0
-        Version: 201103
+        License: MIT License
+        Version: 201104
 """
 
 # PYTHON STANDARD LIBRARY IMPORTS
