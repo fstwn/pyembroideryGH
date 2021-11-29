@@ -35,6 +35,7 @@ ghenv.Component.SubCategory = "3 Pattern Creation"
 # LOCAL MODULE IMPORTS
 try:
     import pyembroidery
+    
 except ImportError:
     errMsg = ("The pyembroidery python module seems to be not correctly " +
               "installed! Please make sure the module is in you search " +
